@@ -1,19 +1,13 @@
 import json
-import psycopg2
 from psycopg2.extras import Json
-from src.utils.database_connection import DB_CONFIG
+from src.utils.database_connection import conn
 
 
 INSERT_SQL = """
 INSERT INTO meter_readings (account_id, brand, connection_ean_code, energy_type, meter_number,
                    reading_date, reading_electricity, reading_gas, rejection,
                    validation_status)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (account_id) DO NOTHING;
-"""
-
-CHECK_SQL = """
-SELECT 1 FROM meter WHERE connection_ean_code = %s;
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 """
 
 SELECT_SQL = """
@@ -22,26 +16,17 @@ SELECT * FROM meter_readings WHERE energy_type = 'GAS';
 
 def load_meter_readings_data(json_file, db_config):
     try:
-        conn = psycopg2.connect(**db_config)
-        cur = conn.cursor()
+        con = conn(db_config)
+        cur = con.cursor()
 
         with open(json_file, 'r') as file:
             data = json.load(file)
 
         for record in data:
 
-            cur.execute(CHECK_SQL, (record['connection_ean_code'],))
-            if cur.fetchone() is None:
-                print(f"Skipping record with connection_ean_code {record['connection_ean_code']} - not found in meter table.")
-                continue
-
-
             reading_electricity = Json(record['reading_electricity']) if isinstance(record['reading_electricity'], dict) else record['reading_electricity']
             reading_gas = Json(record['reading_gas']) if isinstance(record['reading_gas'], dict) else record['reading_gas']
             rejection = Json(record['rejection']) if isinstance(record['rejection'], dict) else record['rejection']
-
-
-
 
             cur.execute(INSERT_SQL, (
                 record['account_id'], record['brand'],
@@ -50,7 +35,7 @@ def load_meter_readings_data(json_file, db_config):
                 reading_gas, rejection, record['validation_status']
             ))
 
-        conn.commit()
+        con.commit()
         print("JSON data uploaded successfully.")
 
     except Exception as e:
@@ -59,14 +44,15 @@ def load_meter_readings_data(json_file, db_config):
     finally:
         if cur:
             cur.close()
-        if conn:
-            conn.close()
+
+        if con:
+            con.close()
 
 
 def export_meter_readings_data(output_json_file, db_config):
     try:
-        conn = psycopg2.connect(**db_config)
-        cur = conn.cursor()
+        con = conn(db_config)
+        cur = con.cursor()
 
         cur.execute(SELECT_SQL)
         rows = cur.fetchall()
@@ -85,18 +71,12 @@ def export_meter_readings_data(output_json_file, db_config):
     finally:
         if cur:
             cur.close()
-        if conn:
-            conn.close()
+
+        if con:
+            con.close()
 
 
-if __name__ == "__main__":
 
-    execute_load = False
-
-    if execute_load:
-        load_meter_readings_data(r"/data/meter_readings.json", DB_CONFIG)
-
-    export_meter_readings_data("../data/output_meter_readings_data.json", DB_CONFIG)
 
 
 
