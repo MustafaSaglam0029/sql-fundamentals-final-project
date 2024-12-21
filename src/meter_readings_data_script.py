@@ -3,6 +3,7 @@ from psycopg2.extras import Json
 from src.utils.database_connection import conn
 
 
+
 INSERT_SQL = """
 INSERT INTO meter_readings (account_id, brand, connection_ean_code, energy_type, meter_number,
                    reading_date, reading_electricity, reading_gas, rejection,
@@ -74,9 +75,6 @@ def export_meter_readings_data(output_json_file, db_config):
 
         if con:
             con.close()
-
-
-
 
 
 

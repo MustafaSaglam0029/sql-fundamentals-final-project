@@ -1,4 +1,4 @@
-create type energy_types_enum as enum ('GAS', 'ELECTRICITY');
+create type energy_types_enum as enum ('GAS', 'ELECTRICITY','UNKNOWN');
 
 
 create table meter_readings

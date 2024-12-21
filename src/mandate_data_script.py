@@ -6,8 +6,7 @@ INSERT_SQL = """
 INSERT INTO mandate (business_partner_id,mandate_status,collection_frequency,brand,
                      row_update_datetime,row_create_datetime,changed_by,mandate_id,
                      collection_type,metering_consent)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (mandate_id) DO NOTHING;
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 """
 
 
@@ -73,5 +72,8 @@ def export_mandate_data(output_json_file, db_config):
 
         if con:
             con.close()
+
+
+
 
 

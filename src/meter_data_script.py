@@ -6,8 +6,7 @@ INSERT_SQL = """
 INSERT INTO meter (business_partner_id,connection_ean_code,grid_company_code,oda_code,meter_number,
                    smart_collectable,brand,sjv1,sjv2,installation,division,move_out_date,
                    row_create_datetime,move_in_date)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (meter_number) DO NOTHING;
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
 """
 
 SELECT_SQL = """
