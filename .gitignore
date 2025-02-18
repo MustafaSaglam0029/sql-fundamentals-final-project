@@ -131,7 +131,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-.venv/Lib/
 lib64/
 parts/
 sdist/
@@ -285,5 +284,3 @@ poetry.toml
 
 # LSP config files
 pyrightconfig.json
-
-# End of https://www.toptal.com/developers/gitignore/api/python,pycharm
