@@ -1,8 +1,8 @@
 import psycopg2
 
 db_config = {
-    "dbname": "postgres",
-    "user": "postgres",
+    "dbname": "mydb",
+    "user": "musti",
     "password": "1234",
     "host": "127.0.0.1",
     "port": "5432"
